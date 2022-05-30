@@ -54,28 +54,27 @@ done:
 
 }
 
-void print_int_as_binary(uint32_t num, int size) {
+void print_int_as_binary(uint64_t num, int size) {
         char *binary_buf = (char *)malloc(sizeof(char) * (size + 1));
         int i;
-        uint32_t shifted_num;
+        uint64_t shifted_num = 0;
 
         binary_buf[size] = '\0';
 
         /* this function can print upto 32-bit number */
-        assert(size > 0 && size < 33);
-        shifted_num = (num << (32 - size));
+        assert(size > 0 && size < 65);
+        shifted_num = (num << (64 - size));
         
         for (i = 0; i < size; ++i) {
-                if ((shifted_num & (1 << (31 - i))) != 0) {
-                        binary_buf[i] = '1';
-                }
-                else
+                if (!(shifted_num & ((uint64_t)1 << 63)))
                         binary_buf[i] = '0';
+                else
+                        binary_buf[i] = '1';
+                shifted_num <<= 1;
         }
 
         printf("%s", binary_buf);
 
         /* deallocate output buffer */
         free(binary_buf);
-
 }
