@@ -1,6 +1,7 @@
 /* Program for testing all functions in the program */
 #include "crc.h"
 #include "util.h"
+#include "hamming.h"
 
 void test_crc_encoder()
 {
@@ -47,9 +48,30 @@ void test_crc_decoder()
         printf("===================================\n\n");
 }
 
+void test_hamming_encoder()
+{
+        uint8_t codeword;
+
+        printf("========== TEST FOR (7, 4) Hamming ENCODER ==========\n");
+        
+        for (uint8_t data = 0; data < 16; ++data) {
+                // print input data
+                printf("verifying input: ");
+                print_int_as_binary(data, 4);
+                printf(" (%X)\n", data);
+
+                codeword = hamming_encoder(data);
+                printf("output: ");
+                print_int_as_binary(data, 4); putchar(' ');
+                print_int_as_binary(codeword, 7);
+                printf(" (%X %X)\n===================================\n\n",
+                                data, codeword);
+        }
+}
+
 int main()
 {
-        test_crc_decoder();
+        test_hamming_encoder();
 
         return 0;
 }
