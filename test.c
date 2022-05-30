@@ -2,6 +2,7 @@
 #include "crc.h"
 #include "util.h"
 #include "hamming.h"
+#include "two_layer.h"
 
 void test_crc_encoder()
 {
@@ -95,9 +96,32 @@ void test_hamming_decoder()
         printf("\n\n");
 }
 
+void test_two_layer_encoder()
+{
+        uint16_t data;
+        uint64_t encoded;
+        int i;
+
+        printf("========== TEST FOR Two-layer ENCODER ==========\n");
+        data = get_binary_input(16);
+
+        // print input data
+        printf("verifying input: ");
+        print_int_as_binary(data, 16);
+        printf(" (%X)\n", data);
+
+        encoded = two_layer_encoder(data);
+        printf("encoded: ");
+        for (i = 0; i < 6; ++i) {
+                print_int_as_binary((encoded & ((uint64_t)0x7F << (5 - i) * 7)) >> ((5 - i) * 7), 7);
+                putchar(' ');
+        };
+        printf("\n\n");
+}
+
 int main()
 {
-        test_hamming_decoder();
+        test_two_layer_encoder();
 
         return 0;
 }
