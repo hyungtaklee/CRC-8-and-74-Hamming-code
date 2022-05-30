@@ -69,9 +69,35 @@ void test_hamming_encoder()
         }
 }
 
+void test_hamming_decoder()
+{
+        uint8_t codeword;
+        uint8_t syndrom;
+        uint8_t corrected_codeword;
+
+        printf("========== TEST FOR (7, 4) Hamming DECODER ==========\n");
+        codeword = get_binary_input(7);
+
+        // print input data
+        printf("verifying input: ");
+        print_int_as_binary(codeword, 7);
+        printf(" (%X)\n", codeword);
+
+        syndrom = hamming_decoder(codeword);
+        printf("syndrom: ");
+        print_int_as_binary(syndrom, 3);
+        putchar(' ');
+        corrected_codeword = hamming_error_correction(codeword, syndrom, true);
+
+        printf(" corrected data: ");
+        // print_int_as_binary(corrected_codeword, 7);
+        print_int_as_binary((corrected_codeword & 0x78) >> 3, 4);
+        printf("\n\n");
+}
+
 int main()
 {
-        test_hamming_encoder();
+        test_hamming_decoder();
 
         return 0;
 }
