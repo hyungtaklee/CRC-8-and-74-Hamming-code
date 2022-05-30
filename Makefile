@@ -20,4 +20,4 @@ hamming.o: hamming.c hamming.h
 	gcc -c hamming.c
 
 clean:
-	rm *.o test
+	rm *.o test main
