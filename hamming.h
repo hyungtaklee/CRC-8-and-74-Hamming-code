@@ -10,7 +10,7 @@ uint8_t hamming_encoder(const uint8_t data);
 uint8_t hamming_decoder(const uint8_t codeword);
 uint8_t hamming_error_correction(
         const uint8_t codeword,
-        const uint8_t syndrom,
+        const uint8_t syndrome,
         const bool is_print
 );
 

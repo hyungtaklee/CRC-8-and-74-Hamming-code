@@ -52,7 +52,7 @@ uint8_t hamming_decoder(const uint8_t codeword)
         /* Range check for codeword */
         assert(codeword <= 0x7F);
 
-        /* Calculate syndrom */
+        /* Calculate syndrome */
         for (i = 0; i < 3; ++i) {
                 uint8_t val = 0;
                 for (j = 0; j < 7; ++j) {
@@ -66,10 +66,10 @@ uint8_t hamming_decoder(const uint8_t codeword)
 
 uint8_t hamming_error_correction(
         const uint8_t codeword,
-        const uint8_t syndrom,
+        const uint8_t syndrome,
         const bool is_print)
 {
-        /* Mapping syndrom to bit to unfilp, 0 stands for no error */
+        /* Mapping syndrome to bit to unfilp, 0 stands for no error */
         const int correction_tbl[8] = {
                 0, 7, 6, 4,
                 5, 1, 2, 3
@@ -79,9 +79,9 @@ uint8_t hamming_error_correction(
 
         /* Range checks */
         assert(codeword <= 0x7F);
-        assert(syndrom < 0x08);
+        assert(syndrome < 0x08);
 
-        if (correction_tbl[syndrom] == 0) {
+        if (correction_tbl[syndrome] == 0) {
                 corrected_codeword = codeword;
                 
                 if (is_print) {
@@ -91,12 +91,12 @@ uint8_t hamming_error_correction(
         /* When syndrom is larger than 0 and smaller than 8 */
         else {
                 flip_mask = 1;
-                flip_mask <<= (7 - correction_tbl[syndrom]);
+                flip_mask <<= (7 - correction_tbl[syndrome]);
 
                 corrected_codeword = flip_mask ^ codeword;
 
                 if (is_print) {
-                        printf("(r%d corrected)", correction_tbl[syndrom]);
+                        printf("(r%d corrected)", correction_tbl[syndrome]);
                 }
         }
 
