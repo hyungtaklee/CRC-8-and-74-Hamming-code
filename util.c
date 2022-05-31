@@ -2,15 +2,12 @@
 
 uint32_t get_binary_input(int size) {
         char *input_buf;
-        char *converted_buf; 
         uint32_t num = 0;
-        int i, j = 0;
-        char ch;
+        int i;
 
         /* allocate buffer memory */
         assert(size <= 32);
         input_buf = (char *)malloc(sizeof(char) * (size + 1));
-        converted_buf = (char *)malloc(sizeof(char) * (size + 1));
 
         /* read user's binary input, fgets read `size` chars from stdin */
         printf("data: ");
@@ -18,40 +15,73 @@ uint32_t get_binary_input(int size) {
 
         for (i = 0; i < size; ++i) {
                 /* ASCII characters '1' and '2' are only characters allowed */
-        switch (input_buf[i]) {
-            case '0':
-                num = num << 1;
-                converted_buf[j] = '0';
-                ++j;
-                break;
-            case '1':
-                num = num << 1;
-                num += 1;
-                converted_buf[j] = '1';
-                ++j;
-                break;
-                    /* When the input is shorter than size */
-            case '\0':
-                goto done;
-                    default:
-                            printf("Invalid character: %c, %x\n", input_buf[i], input_buf[i]);
+                switch (input_buf[i]) {
+                case '0':
+                        num = num << 1;
+                        break;
+                case '1':
+                        num = num << 1;
+                        num += 1;
+                        break;
+                /* When the input is shorter than size */
+                case '\0':
+                        goto done;
+                default:
+                        printf("Invalid character: %c, %x\n", input_buf[i], input_buf[i]);
                 }
         }
-
 done:
-        converted_buf[j] = '\0';
-        
-        /* for debug
-        printf("Input binary number: %s\n", input_buf);
-        printf("Converted binary number: %s\n", converted_buf);
-        printf("Converted hexadecimal: %x\n\n", num); */
-
-        /* deallocate the string buffers */
         free(input_buf);
-        free(converted_buf);
 
         return num;
+}
 
+uint64_t get_long_binary_input(int size) {
+        char *input_buf;
+        uint64_t num = 0;
+        int i;
+        int digits_read = 0;
+        const int max_char = 255;
+
+        /* allocate buffer memory */
+        assert(size <= 64);
+        input_buf = (char *)malloc(sizeof(char) * (max_char + 1));
+
+        /* read user's binary input, fgets read `size` chars from stdin */
+        printf("data: ");
+        fgets(input_buf, max_char + 1, stdin);
+
+        for (i = 0; i < max_char; ++i) {
+                /* check the number of bits read */
+                if (digits_read >= size) {
+                        break;
+                }
+
+                /* ignore all chars except for '1' and '0' */
+                switch (input_buf[i]) {
+                case '0':
+                        num = num << 1;
+                        digits_read++;
+                        break;
+                case '1':
+                        num = num << 1;
+                        num += 1;
+                        digits_read++;
+                        break;
+                case ' ':
+                        break;
+                /* When the input is shorter than size */
+                case '\0':
+                        goto done;
+                default:
+                        break;
+                }
+        }
+done:
+        /* deallocate the string buffers */
+        free(input_buf);
+
+        return num;
 }
 
 void print_int_as_binary(uint64_t num, int size) {

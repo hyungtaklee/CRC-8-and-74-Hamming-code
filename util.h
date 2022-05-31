@@ -8,6 +8,7 @@
 #include <assert.h>
 
 uint32_t get_binary_input(int size);
+uint64_t get_long_binary_input(int size);
 void print_int_as_binary(uint64_t num, int size); 
 
 #endif
