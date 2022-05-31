@@ -1,4 +1,6 @@
-/* Program for testing all functions in the program */
+#include <stdio.h>
+#include <stdbool.h>
+
 #include "crc.h"
 #include "util.h"
 #include "hamming.h"
@@ -73,7 +75,7 @@ void test_hamming_encoder()
 void test_hamming_decoder()
 {
         uint8_t codeword;
-        uint8_t syndrom;
+        uint8_t syndrome;
         uint8_t corrected_codeword;
 
         printf("========== TEST FOR (7, 4) Hamming DECODER ==========\n");
@@ -84,11 +86,11 @@ void test_hamming_decoder()
         print_int_as_binary(codeword, 7);
         printf(" (%X)\n", codeword);
 
-        syndrom = hamming_decoder(codeword);
-        printf("syndrom: ");
-        print_int_as_binary(syndrom, 3);
+        syndrome = hamming_decoder(codeword);
+        printf("syndrome: ");
+        print_int_as_binary(syndrome, 3);
         putchar(' ');
-        corrected_codeword = hamming_error_correction(codeword, syndrom, true);
+        corrected_codeword = hamming_error_correction(codeword, syndrome, true);
 
         printf(" corrected data: ");
         // print_int_as_binary(corrected_codeword, 7);
@@ -119,9 +121,36 @@ void test_two_layer_encoder()
         printf("\n\n");
 }
 
+void test_two_layer_decoder()
+{
+        uint64_t input_data;
+        uint16_t recovered_data;
+        bool is_ok = false;
+        int i;
+
+        input_data = get_long_binary_input(48);
+        printf("Input:");
+        for (i = 0; i < 6; ++i) {
+                print_int_as_binary((input_data & ((uint64_t)0x7F << (5 - i) * 7)) >> ((5 - i) * 7), 7);
+                putchar(' ');
+        };
+        putchar('\n');
+
+        is_ok = two_layer_decoder(input_data, &recovered_data);
+
+        printf("Output: ");
+        if (is_ok) {
+                print_int_as_binary(recovered_data, 16);
+                putchar('\n');
+        }
+        else {
+                printf("ERROR!!\n");
+        }
+}
+
 int main()
 {
-        test_two_layer_encoder();
+        test_two_layer_decoder();
 
         return 0;
 }
