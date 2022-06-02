@@ -44,9 +44,11 @@ int main()
                                 break;
                         /* Hamming encoder */
                         case '3':
+                                run_hamming_encoder();
                                 break;
                         /* Hamming decoder */
                         case '4':
+                                run_hamming_decoder();
                                 break;
                         /* two-layer encoder */
                         case '5':
@@ -104,25 +106,54 @@ void run_crc_decoder()
 
         /* Print result */
         if (!remainder) { /* No error */
-                printf("No error (");
-                print_int_as_binary(remainder, 8);
-                printf(", %02X)\n", remainder);
+                printf("No error\n");
+
         }
         else { /* Error */
-                printf("ERROR! (");
-                print_int_as_binary(remainder, 8);
-                printf(", %02X)\n", remainder);
+                printf("ERROR!!\n");
         }
 }
 
 void run_hamming_encoder()
 {
+        uint8_t data;
+        uint8_t codeword;
 
+        /* Read a binary number */
+        data = get_binary_input(4);
+
+        printf("Input: ");
+        print_int_as_binary(data, 4);
+        putchar('\n');
+
+        /* Encode the data with (7, 4) Hamming code */
+        codeword = hamming_encoder(data);
+        printf("output: ");
+        print_int_as_binary(data, 4); putchar(' ');
+        print_int_as_binary((codeword & 0x7), 3);
+        putchar('\n');
 }
 
 void run_hamming_decoder()
 {
+        uint8_t codeword;
+        uint8_t syndrome;
+        uint8_t corrected_codeword;
 
+        /* Read a binary number */
+        codeword = get_binary_input(7);
+
+        printf("Input: ");
+        print_int_as_binary(codeword, 7);
+        printf("\n");
+
+        /* Decode the data with (7, 4) Hamming code */
+        syndrome = hamming_decoder(codeword);
+        corrected_codeword = hamming_error_correction(codeword, syndrome, false);
+
+        printf("Output: ");
+        print_int_as_binary((corrected_codeword & 0x78) >> 3, 4);
+        putchar('\n');
 }
 
 void run_two_layer_encoder()
