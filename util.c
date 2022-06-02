@@ -9,7 +9,7 @@ uint32_t get_binary_input(int size) {
 
         /* allocate buffer memory */
         assert(size <= 32);
-        input_buf = (char *)malloc(sizeof(char) * (size + 1));
+        input_buf = (char *)malloc(sizeof(char) * (max_char + 1));
 
         /* read user's binary input, fgets read `size` chars from stdin */
         printf("data: ");
