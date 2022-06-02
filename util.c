@@ -4,6 +4,8 @@ uint32_t get_binary_input(int size) {
         char *input_buf;
         uint32_t num = 0;
         int i;
+        int digits_read = 0;
+        const int max_char = 255;
 
         /* allocate buffer memory */
         assert(size <= 32);
@@ -11,26 +13,37 @@ uint32_t get_binary_input(int size) {
 
         /* read user's binary input, fgets read `size` chars from stdin */
         printf("data: ");
-        fgets(input_buf, size + 1, stdin);
+        fgets(input_buf, max_char + 1, stdin);
 
-        for (i = 0; i < size; ++i) {
-                /* ASCII characters '1' and '2' are only characters allowed */
+        for (i = 0; i < max_char; ++i) {
+                /* check the number of bits read */
+                if (digits_read >= size) {
+                        break;
+                }
+
+                /* ignore all chars except for '1' and '0' */
                 switch (input_buf[i]) {
-                case '0':
-                        num = num << 1;
-                        break;
-                case '1':
-                        num = num << 1;
-                        num += 1;
-                        break;
-                /* When the input is shorter than size */
-                case '\0':
-                        goto done;
-                default:
-                        printf("Invalid character: %c, %x\n", input_buf[i], input_buf[i]);
+                        case '0':
+                                num = num << 1;
+                                digits_read++;
+                                break;
+                        case '1':
+                                num = num << 1;
+                                num += 1;
+                                digits_read++;
+                                break;
+                        case ' ':
+                                break;
+                        /* When the input is shorter than size */
+                        case '\0':
+                                goto done;
+                        default:
+                                printf("Invalid input: %c [0x%X]\n", input_buf[i], input_buf[i]);
+                                break;
                 }
         }
-done:
+        done:
+        /* deallocate the string buffers */
         free(input_buf);
 
         return num;
@@ -74,6 +87,7 @@ uint64_t get_long_binary_input(int size) {
                 case '\0':
                         goto done;
                 default:
+                        printf("Invalid input: %c [0x%X]\n", input_buf[i], input_buf[i]);
                         break;
                 }
         }
