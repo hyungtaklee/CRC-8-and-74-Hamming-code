@@ -38,7 +38,7 @@ bool two_layer_decoder(uint64_t transmitted, uint16_t *decoded_data)
         uint8_t transmitted_block;
         uint8_t syndrome;
         uint8_t hamming_decoded;
-        uint32_t data_with_crc;
+        uint32_t data_with_crc = 0;
         uint32_t crc_remainder;
         int i;
         
