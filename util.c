@@ -83,6 +83,8 @@ uint64_t get_long_binary_input(int size) {
                         break;
                 case ' ':
                         break;
+                case '\n':
+                        break;
                 /* When the input is shorter than size */
                 case '\0':
                         goto done;
