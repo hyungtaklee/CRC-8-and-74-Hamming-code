@@ -52,9 +52,11 @@ int main()
                                 break;
                         /* two-layer encoder */
                         case '5':
+                                run_two_layer_encoder();
                                 break;
                         /* two-layer decoder */
                         case '6':
+                                run_two_layer_decoder();
                                 break;
                         default:
                                 printf("Bye~\n");
@@ -106,11 +108,11 @@ void run_crc_decoder()
 
         /* Print result */
         if (!remainder) { /* No error */
-                printf("No error\n");
+                printf("Output: No error\n");
 
         }
         else { /* Error */
-                printf("ERROR!!\n");
+                printf("Output: ERROR!!\n");
         }
 }
 
@@ -128,7 +130,7 @@ void run_hamming_encoder()
 
         /* Encode the data with (7, 4) Hamming code */
         codeword = hamming_encoder(data);
-        printf("output: ");
+        printf("Output: ");
         print_int_as_binary(data, 4); putchar(' ');
         print_int_as_binary((codeword & 0x7), 3);
         putchar('\n');
@@ -158,10 +160,54 @@ void run_hamming_decoder()
 
 void run_two_layer_encoder()
 {
+        uint16_t data;
+        uint64_t encoded;
+        int i;
+
+        /* Read a binary number */
+        data = get_binary_input(16);
+
+        printf("Input: ");
+        print_int_as_binary(data, 16);
+        putchar('\n');
+
+        /* Encode the data with two-layer encoder */
+        encoded = two_layer_encoder(data);
+        printf("Output: ");
+        for (i = 0; i < 6; ++i) { /* To print the number as 7-bit blocks, split it */
+                print_int_as_binary((encoded & ((uint64_t)0x7F << (5 - i) * 7)) >> ((5 - i) * 7), 7);
+                putchar(' ');
+        };
+        putchar('\n');
+
 
 }
 
 void run_two_layer_decoder()
 {
+        uint64_t input_data;
+        uint16_t recovered_data;
+        bool is_ok = false;
+        int i;
 
+        /* Read a binary number */
+        input_data = get_long_binary_input(48);
+
+        printf("Input:");
+        for (i = 0; i < 6; ++i) {
+                print_int_as_binary((input_data & ((uint64_t)0x7F << (5 - i) * 7)) >> ((5 - i) * 7), 7);
+                putchar(' ');
+        };
+        putchar('\n');
+
+        is_ok = two_layer_decoder(input_data, &recovered_data);
+
+        printf("Output: ");
+        if (is_ok) {
+                print_int_as_binary(recovered_data, 16);
+                putchar('\n');
+        }
+        else {
+                printf("ERROR!!\n");
+        }
 }
